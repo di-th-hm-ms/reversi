@@ -44,13 +44,25 @@ void decorate_board() {
         cout << endl;
     }
 }
+// C -> int C++ -> bool
+bool is_enable_to_set(int y, int x) {
+    if (BOARD[y][x] == 0) 
+}
+
 int main() {
+    // 配置座標
+    int x, y;
     make_board();
     decorate_board();
 //    for (int i = 0; i < BOARD_HEIGHT; ++i) {
 //        for (int j = 0; j < BOARD_WIDTH; ++j) cout << BOARD[i][j];
 //        cout << endl;
 //    }
+
+    do {
+        cout << "配置場所を入力してください。" << endl;
+        cin >> x >> y;
+    } while(!is_enable_to_set(y, x))
 
     return 0;
 }
