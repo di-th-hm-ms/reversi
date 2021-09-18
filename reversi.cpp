@@ -56,19 +56,45 @@ bool is_enable_to_set(int y, int x) {
                 if (check_y < 0 || check_y > BOARD_HEIGHT - 1) continue;
                 while (BOARD[check_y][check_x] == -my_piece) {
                     // opponent's piece
-                    if (check_x < 0 || check_x > BOARD_WIDTH - 1) break;
-                    if (check_y < 0 || check_y > BOARD_HEIGHT - 1) break;
-                    
-                    if (BOARD[check_y][check_x] == my_piece) return true;
-
                     check_y += i;
                     check_x += j;
+                    if (check_x < 0 || check_x > BOARD_WIDTH - 1) break;
+                    if (check_y < 0 || check_y > BOARD_HEIGHT - 1) break;
+                    if (BOARD[check_y][check_x] == my_piece) return true;
                     
                 }
             }
         }
     }
     return false;
+}
+void set_piece(int y, int x) {
+    int check_x, check_y;
+    for (int i = -1; i <= 1 ; ++i) {
+        for (int j = -1; j <= 1; ++j) {
+            check_y = y + i;
+            check_x = x + j;
+            if (check_x < 0 || check_x > BOARD_WIDTH - 1) continue;
+            if (check_y < 0 || check_y > BOARD_HEIGHT - 1) continue;
+            while (BOARD[check_y][check_x] == -my_piece) {
+                check_y += i;
+                check_x += j;
+                if (check_x < 0 || check_x > BOARD_WIDTH - 1) continue;
+                if (check_y < 0 || check_y > BOARD_HEIGHT - 1) continue;
+                if (BOARD[check_y][check_x] == my_piece) {
+                    while (!(y == check_y && x == check_x)) {
+                        check_y -= i;
+                        check_x -= j;
+                        BOARD[check_y][check_x] = my_piece; // reverse + set;
+                        cout << "while2" << endl;
+
+                    }
+                }
+                cout << "while1" << endl;
+            }
+            
+        }
+    } 
 }
 
 int main() {
@@ -85,8 +111,13 @@ int main() {
 
     do {
         cout << "配置場所を入力してください。" << endl;
-        cin >> x >> y;
-    } while(!is_enable_to_set(y, x))
+        cin >> y >> x;
+        
+    } while(!is_enable_to_set(y, x));
+    cout << "true" << endl;
+    set_piece(y, x);
+    decorate_board();
+
 
     return 0;
 }
