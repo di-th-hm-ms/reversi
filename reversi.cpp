@@ -11,10 +11,15 @@ int BOARD[BOARD_WIDTH][BOARD_HEIGHT] = {};
 
 void make_board() {
     for (int i = 0; i < BOARD_WIDTH; ++i) {
-       BOARD[0][i] = 0; 
-       BOARD[BOARD_HEIGHT - 1][i] = 0;
-       BOARD[i][0] = 0; 
-       BOARD[i][BOARD_WIDTH - 1] = 0;
+//       BOARD[0][i] = 0; 
+//       BOARD[BOARD_HEIGHT - 1][i] = 0;
+//       BOARD[i][0] = 0; 
+//       BOARD[i][BOARD_WIDTH - 1] = 0;
+       BOARD[0][i] = 1;
+       BOARD[BOARD_HEIGHT - 1][i] = 1;
+       BOARD[i][0] = 1; 
+       BOARD[i][BOARD_WIDTH - 1] = 1;
+
     }
     BOARD[BOARD_HEIGHT/2 - 1][BOARD_WIDTH/2 - 1] = 1;
     BOARD[BOARD_HEIGHT/2][BOARD_WIDTH/2] = 1;
@@ -96,6 +101,27 @@ void set_piece(int y, int x) {
         }
     } 
 }
+int count_0 = 0;
+// 0 の個数が0のとき、ゲーム終了か、2回4回のパスが続いたら負け。
+bool available_to_set() {
+    bool check = false;
+    for (int i = 0; i < BOARD_HEIGHT; ++i) {
+        for (int j = 0; j < BOARD_WIDTH; ++j) {
+            if (BOARD[i][j] == 0) {
+                count_0 += 1;
+                if (is_enable_to_set(i, j)) {
+                    cout << "true" << endl;
+                    check = true;
+                } 
+            
+            }
+        }
+    }
+    
+    cout << "false" << endl;
+
+    return check;
+}
 
 int main() {
     // 配置座標
@@ -104,19 +130,31 @@ int main() {
     decorate_board();
     my_piece = -1; // default white
 
-//    for (int i = 0; i < BOARD_HEIGHT; ++i) {
-//        for (int j = 0; j < BOARD_WIDTH; ++j) cout << BOARD[i][j];
-//        cout << endl;
-//    }
-
-    do {
-        cout << "配置場所を入力してください。" << endl;
-        cin >> y >> x;
+    cout << "先手 : 白, 後手 : 黒" << endl;
+    while (1) {
+         if (count_0 == 0) {
+            cout << "ゲーム終了" << endl;
+            break;
+         }
+         if (!available_to_set()) {
+             cout << "置くところがありません。" << endl;
+             decorate_board();
+             my_piece = -my_piece;
+             continue;
+         }
+         do {
+             if (my_piece == -1) cout << "白の手番です。" << endl;
+             else cout << "黒の手番です。" << endl;
+             cout << "配置場所を入力してください。" << endl;
+             cin >> y >> x;
         
-    } while(!is_enable_to_set(y, x));
-    cout << "true" << endl;
-    set_piece(y, x);
-    decorate_board();
+         } while(!is_enable_to_set(y, x));
+         cout << "true" << endl;
+         set_piece(y, x);
+         decorate_board();
+         my_piece = -my_piece;
+
+    }
 
 
     return 0;
